@@ -64,5 +64,27 @@ def compute_root(poly, x_0, epsilon):
     returns: tuple (float, int)
     """
     # TO DO ... 
+    x = x_0
+    f = evaluate_poly(poly,x)
+    n = 1
+    if abs(f) < epsilon:
+        return (x,1)
+    else:
+        while (abs(f) > epsilon):
+            n += 1
+            fp = evaluate_poly(compute_deriv(poly),x)
+            x = x - (f/fp)
+            f = evaluate_poly(poly,x)
+    return (x,n)
+
+
+
+
+
+
+
+
+
+
 # if __name__ == '__main__':
 #     print(evaluate_poly((0.0, 0.0, 5.0, 9.3, 7.0),-13))
