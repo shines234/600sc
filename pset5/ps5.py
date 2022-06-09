@@ -46,6 +46,28 @@ def process(url):
 # Problem 1
 
 # TODO: NewsStory
+class NewsStory:
+    def __init__(self,guid,title,subject,summary,link) -> None:
+        self.guid = guid
+        self.title = title
+        self.subject = subject
+        self.summary = summary
+        self.link = link
+
+    def get_guid(self):
+        return self.guid
+            
+    def get_title(self):
+        return self.title
+            
+    def get_subject(self):
+        return self.subject
+            
+    def get_summary(self):
+        return self.summary
+            
+    def get_link(self):
+        return self.link
 
 #======================
 # Part 2
