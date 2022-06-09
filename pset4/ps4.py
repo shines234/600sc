@@ -220,7 +220,7 @@ def apply_coder(text, coder):
     ### TODO.
     ciphertext = ''
     for letter in text:
-        if letter in [',','.','!','?','']:
+        if letter in [',','.','!','?','','"']:
             ciphertext += letter
             continue
         ciphertext += coder[letter]
@@ -348,6 +348,9 @@ def find_best_shifts(wordlist, text):
     >>> print apply_shifts(s, shifts)
     Do Androids Dream of Electric Sheep?
     """
+    shifts = find_best_shifts_rec(wordlist, text, 0)
+    non_zero_shifts = [(index, shift) for index, shift in shifts if shift != 0]
+    return non_zero_shifts
 
 def find_best_shifts_rec(wordlist, text, start):
     """
@@ -365,14 +368,29 @@ def find_best_shifts_rec(wordlist, text, start):
     """
     ### TODO.
     #base case is start the end of the string, so return None
-    if start == len(text) -1:
-        return None
-    else:
-        # find best shift of text at start to end   
-        return [(start,find_best_shift(wordlist,text,start))] + [()]
+    for num in range(27):
+        
+        shifted_text = apply_shift(text[start:], num)
+        
+        s = text[:start] + shifted_text
+        first_space = s.find(" ", start)
+        #print(text,start,shifted_text,first_space)
+
+        if is_word(wordlist, s[start:]):
+            return [(start, num)]
+
+        elif first_space != -1 and is_word(wordlist, s[start:first_space]):
+            shifts = find_best_shifts_rec(wordlist, s, first_space + 1)
+            if shifts:
+                return [(start, num)] + shifts
+            else:
+                continue
+        else:
+            continue
+    return None
 
 def decrypt_fable():
-     """
+    """
     Using the methods you created in this problem set,
     decrypt the fable given by the function get_fable_string().
     Once you decrypt the message, be sure to include as a comment
@@ -382,6 +400,12 @@ def decrypt_fable():
     returns: string - fable in plain text
     """
     ### TODO.
+    fable = get_fable_string()
+    shifts = find_best_shifts(wordlist,fable)
+    dec_fable = apply_shifts(fable,shifts)
+    return dec_fable
+
+
 
 
 
@@ -394,11 +418,8 @@ def decrypt_fable():
 #
 
 def main():
-    print(apply_shifts("Do Androids Dream of Electric Sheep?", [(0,6), (3, 18),(12, 16)]))
-    # s = 'JufYkaolfapxQdrnzmasmRyrpfdvpmEurrb?'
-    # shifts = find_best_shifts_rec(wordlist,s,0)
-    # print(shifts)
-    # print(apply_shifts(s,shifts))
+    print(decrypt_fable())
+
 
 if __name__ == '__main__':
     main()
