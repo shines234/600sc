@@ -1,6 +1,6 @@
 from xml.etree.ElementTree import TreeBuilder
 
-
+# q1
 def endBal(balance,rate,minrate):
     total = 0
     nmonths = 0
@@ -17,7 +17,7 @@ def endBal(balance,rate,minrate):
     return balance,nmonths
 
 
-
+# q2
 def p2(balance, ann_rate,minpay):
     mon_rate = ann_rate/12.0
     nmonths = 0
@@ -28,14 +28,7 @@ def p2(balance, ann_rate,minpay):
             return balance,13
     return balance,nmonths
 
-
-def p3(balance,ann_rate,minpay):
-    mon_rate = ann_rate/12.0
-    nmonths = 0
-    for i in range(12):
-        balance = balance*(1 + mon_rate) - minpay
-    return balance
-
+#q3
 def biset(balance, ann_rate,epsilon):
     mon_rate = ann_rate / 12.0
     low = balance/12.0
@@ -43,9 +36,8 @@ def biset(balance, ann_rate,epsilon):
     while True:
         
         mid = (low + high)/2.0
-        print(low,mid,high)
         if (high - low) < epsilon:
-            print(mid)
+            print(f"min monthly payment: {mid}")
             break
         # calculate endbal and nmonths at midpay
         # if endbal > 0, search mid to high
@@ -60,15 +52,6 @@ def biset(balance, ann_rate,epsilon):
             low = mid
             mid = (low + high) / 2.0
             
-
-
-    
-
-
-
-
-
-
 
 if __name__ == "__main__":
     balance = int(input("balance: " ))
