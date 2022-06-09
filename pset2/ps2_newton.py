@@ -19,7 +19,7 @@ def evaluate_poly(poly, x):
     """
     # TO DO ... 
     sum =0
-    for i in range(len(poly)-1,-1,-1):
+    for i in range(len(poly) -1,-1,-1):
         sum += poly[i] * (x**i)
     return sum
 
@@ -38,6 +38,10 @@ def compute_deriv(poly):
     returns: tuple of numbers
     """
     # TO DO ... 
+    fp = []
+    for i in range(1,len(poly)):
+        fp.append(i*poly[i])
+    return fp
 
 def compute_root(poly, x_0, epsilon):
     """
