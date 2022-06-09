@@ -18,6 +18,10 @@ def evaluate_poly(poly, x):
     returns: float
     """
     # TO DO ... 
+    sum =0
+    for i in range(len(poly)-1,-1,-1):
+        sum += poly[i] * (x**i)
+    return sum
 
 
 def compute_deriv(poly):
@@ -56,4 +60,5 @@ def compute_root(poly, x_0, epsilon):
     returns: tuple (float, int)
     """
     # TO DO ... 
-
+# if __name__ == '__main__':
+#     print(evaluate_poly((0.0, 0.0, 5.0, 9.3, 7.0),-13))
