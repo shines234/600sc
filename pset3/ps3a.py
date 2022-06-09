@@ -5,8 +5,9 @@
 #
 #
 
+from math import ceil
 import random
-
+import string
 
 VOWELS = 'aeiou'
 CONSONANTS = 'bcdfghjklmnpqrstvwxyz'
@@ -77,7 +78,13 @@ def get_word_score(word, n):
     returns: int >= 0
     """
     # TO DO...
-    
+    score = 0
+    for let in word:
+        score+= SCRABBLE_LETTER_VALUES[let]
+    score = score * len(word)
+    if len(word) == n:
+        score += 50
+    return score
 #
 # Make sure you understand how this function works and what it does!
 #
@@ -93,10 +100,10 @@ def display_hand(hand):
 
     hand: dictionary (string -> int)
     """
-    for letter in list(hand.keys()):
+    for letter in hand.keys():
         for j in range(hand[letter]):
-             print(letter, end=' ')              # print all on the same line
-    print()                               # print an empty line
+             print(letter)              # print all on the same line
+    print('')                              # print an empty line
 
 #
 # Make sure you understand how this function works and what it does!
@@ -114,7 +121,7 @@ def deal_hand(n):
     returns: dictionary (string -> int)
     """
     hand={}
-    num_vowels = n / 3
+    num_vowels = ceil(n / 3)
     
     for i in range(num_vowels):
         x = VOWELS[random.randrange(0,len(VOWELS))]
@@ -146,6 +153,10 @@ def update_hand(hand, word):
     returns: dictionary (string -> int)
     """
     # TO DO ...
+    hand2 = hand.copy()
+    for letter in word:
+        hand2[letter] = hand2[letter] - 1
+    return hand2
 
 #
 # Problem #3: Test word validity
@@ -161,10 +172,22 @@ def is_valid_word(word, hand, word_list):
     word_list: list of lowercase strings
     """
     # TO DO...
+    hand2 = hand
+    indict = False
+    if word in word_list:
+        indict = True
+    valid = True
+    for letter in word:
+        if (letter in hand) and (hand2[letter] > 0):
+            hand2 = update_hand(hand2,letter)
+            continue
+        else:
+            valid = False
+    return (indict and valid)
 
 def calculate_handlen(hand):
     handlen = 0
-    for v in list(hand.values()):
+    for v in hand.values():
         handlen += v
     return handlen
 
@@ -199,7 +222,32 @@ def play_hand(hand, word_list):
       word_list: list of lowercase strings
       
     """
-    # TO DO ...
+        # TO DO ...
+    npoints = 0
+    total = 0
+    gamedone = 0
+    while(True):
+        print('current hand:')
+        display_hand(hand)
+        validword = False
+        while not validword:
+            word = input('Enter word, or a "." to indicate that you are finished: ')
+            validword = is_valid_word(word,hand,word_list)
+            if word == '.':
+                validword = True
+        if word != '.':
+            npoints = get_word_score(word,HAND_SIZE)
+            total += npoints
+            print(f'{word} earned {npoints} points. Total: {total} points')
+            hand = update_hand(hand,word)
+            gamedone = 1
+            for letter in hand:
+                if hand[letter] > 0:
+                    gamedone = 0 
+        if gamedone or word == '.':
+            print(f'Total Score: {total} points')
+            break
+        
 
 #
 # Problem #5: Playing a game
@@ -221,7 +269,24 @@ def play_game(word_list):
     * If the user inputs anything else, ask them again.
     """
     # TO DO...
-
+    exit = False
+    hand = deal_hand(HAND_SIZE)
+    while not exit:
+        while(True):
+            inp = input("n,r or e: ")
+            if inp == 'n':
+                hand = deal_hand(HAND_SIZE)
+                break
+            if inp == 'r':
+                break
+            if inp == 'e':
+                exit = True
+                break
+        if (exit):
+            break
+        play_hand(hand,word_list)
+    print('Thanks for playing')
+        
 #
 # Build data structures used for entire session and play game
 #
