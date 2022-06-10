@@ -6,7 +6,7 @@
 from tkinter.messagebox import NO
 import numpy
 import random
-#import pylab
+import matplotlib.pylab as pylab
 
 ''' 
 Begin helper code
@@ -146,7 +146,7 @@ class SimplePatient(object):
             else:
                 suriving_viruses.append(virus)
 
-        pop_density = len(self.viruses) / float(self.maxPop)
+        pop_density = len(self.viruses) / float(self.maxpop)
 
         patient_viruses = []
         for virus in suriving_viruses:
@@ -164,7 +164,7 @@ class SimplePatient(object):
 #
 # PROBLEM 2
 #
-def simulationWithoutDrug():
+def simulationWithoutDrug(num_trials, maxBirthProb, clearProb, maxPop, num_viruses, num_time_steps):
 
     """
     Run the simulation and plot the graph for problem 2 (no drugs are used,
@@ -174,3 +174,37 @@ def simulationWithoutDrug():
     """
 
     # TODO
+    total_trial_results = single_simulation(maxBirthProb, clearProb, maxPop, num_viruses, num_time_steps)
+
+    for trial in range(num_trials - 1):
+        trial_results = single_simulation(maxBirthProb, clearProb, maxPop, num_viruses, num_time_steps)
+
+        for num, result in enumerate(trial_results):
+            total_trial_results[num] += result
+
+    averaged_results = [time_step_result / float(num_trials) for time_step_result in total_trial_results]
+
+    pylab.plot(averaged_results, label="SimpleVirus")
+    pylab.xlabel("Amount of Time")
+    pylab.ylabel("Virus Population")
+    pylab.title("Virus Simulation without Drug")
+    pylab.show()
+
+def single_simulation(maxBirthProb, clearProb, maxPop, num_viruses, num_time_steps):
+
+    viruses = []
+    for num in range(num_viruses):
+        virus = SimpleVirus(maxBirthProb, clearProb)
+        viruses.append(virus)
+
+    patient = SimplePatient(viruses, maxPop)
+
+    virus_populations = []
+
+    for time_step in range(num_time_steps):
+        virus_populations.append(patient.update())
+
+    return virus_populations
+
+if __name__ == '__main__':
+    simulationWithoutDrug(1,0.1,0.05,1000,100,300)
