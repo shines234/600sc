@@ -86,10 +86,39 @@ class Trigger(object):
 # Problems 2-5
 
 # TODO: WordTrigger
+class WordTrigger(Trigger):
+    def __init__(self,word):
+        self.word = word
+    def is_word_in(self, text):
+        text = text.lower()
+        for char in string.punctuation:
+            text = text.replace(char, " ")
+        words = text.split(" ")
+        return self.word.lower() in words
 
 # TODO: TitleTrigger
+class TitleTrigger(WordTrigger):
+    def __init__(self, word):
+        WordTrigger.__init__(self, word)
+
+    def evaluate(self, story):
+        return self.is_word_in(story.get_title())
+
 # TODO: SubjectTrigger
+class SubjectTrigger(WordTrigger):
+    def __init__(self,word):
+        WordTrigger.__init__(self,word)
+
+    def evaluate(self,story):
+        return self.is_word_in(story.get_subject())
+
 # TODO: SummaryTrigger
+class SummaryTrigger(WordTrigger):
+    def __init__(self,word):
+        WordTrigger.__init__(self,word)
+
+    def evaluate(self,story):
+        return self.is_word_in(story.get_subject())
 
 
 # Composite Triggers
