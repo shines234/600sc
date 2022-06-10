@@ -187,6 +187,26 @@ def filter_stories(stories, triggerlist):
 # Part 4
 # User-Specified Triggers
 #======================
+def make_trigger(trigger_type, parameters, trigger_dictionary):
+    #print( trigger_dictionary)
+    if trigger_type == "TITLE":
+        trigger = TitleTrigger(parameters)
+    elif trigger_type == "SUBJECT":
+        trigger = SubjectTrigger(parameters)
+    elif trigger_type == "SUMMARY":
+        trigger = SummaryTrigger(parameters)
+    elif trigger_type == "NOT":
+        trigger = NotTrigger(trigger_dictionary[parameters])
+    elif trigger_type == "AND":
+        trigger = AndTrigger(trigger_dictionary[parameters[0]], trigger_dictionary[parameters[1]])
+    elif trigger_type == "OR":
+        trigger = OrTrigger(trigger_dictionary[parameters[0]], trigger_dictionary[parameters[1]])
+    elif trigger_type == "PHRASE":
+        trigger = PhraseTrigger(parameters)
+    else:
+        return None
+    return trigger
+
 
 def readTriggerConfig(filename):
     """
@@ -209,6 +229,42 @@ def readTriggerConfig(filename):
     # 'lines' has a list of lines you need to parse
     # Build a set of triggers from it and
     # return the appropriate ones
+        triggerfile = open(filename, "r")
+    all = [ line.rstrip() for line in triggerfile.readlines() ]
+    lines = []
+    for line in all:
+        if len(line) == 0 or line[0] == '#':
+            continue
+        lines.append(line)
+
+    trigger_dictionary = {}
+    added_triggers = []
+
+    for line in lines:
+        split_line = line.split(" ")
+        trigger_name = split_line[0]
+        trigger_type = split_line[1]
+        parameters = split_line[2:]
+
+        if split_line[0] == "ADD":
+            for trigger in split_line[1:]:
+                trigger_to_add = trigger_dictionary[trigger]
+                added_triggers.append(trigger_to_add)
+
+        elif split_line[1] == "AND" or split_line[1] == "OR":
+            trigger_dictionary[trigger_name] = make_trigger(trigger_type, parameters, trigger_dictionary)
+
+        elif split_line[1] == "NOT":
+            trigger_dictionary[trigger_name] = make_trigger(trigger_type, parameters, trigger_dictionary)
+
+        elif split_line[1] == "PHRASE":
+            trigger_dictionary[trigger_name] = make_trigger(trigger_type, " ".join(parameters), trigger_dictionary)
+
+        else:
+            trigger_dictionary[trigger_name] = make_trigger(trigger_type, parameters[0], trigger_dictionary)
+
+    return added_triggers
+
     
 import _thread
 
