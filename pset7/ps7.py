@@ -3,9 +3,10 @@
 # Collaborators:
 # Time:
 
+from tkinter.messagebox import NO
 import numpy
 import random
-import pylab
+#import pylab
 
 ''' 
 Begin helper code
@@ -41,6 +42,8 @@ class SimpleVirus(object):
         """
 
         # TODO
+        self.maxprob = maxBirthProb
+        self.clearprob = clearProb
 
     def doesClear(self):
 
@@ -50,7 +53,7 @@ class SimpleVirus(object):
         False.
         """
 
-        # TODO
+        return random.random() < self.clearprob
 
     
     def reproduce(self, popDensity):
@@ -75,6 +78,10 @@ class SimpleVirus(object):
         """
 
         # TODO
+        if random.random() < self.maxprob*(1-popDensity):
+            return SimpleVirus(self.maxprob,self.clearprob)
+        else:
+            raise NoChildException
 
 
 
@@ -99,6 +106,8 @@ class SimplePatient(object):
         """
 
         # TODO
+        self.viruses = viruses
+        self.maxpop = maxPop
 
 
     def getTotalPop(self):
@@ -109,6 +118,7 @@ class SimplePatient(object):
         """
 
         # TODO        
+        return len(self.viruses)
 
 
     def update(self):
@@ -129,6 +139,25 @@ class SimplePatient(object):
         """
 
         # TODO
+        suriving_viruses = []
+        for virus in self.viruses:
+            if virus.doesClear():
+                continue
+            else:
+                suriving_viruses.append(virus)
+
+        pop_density = len(self.viruses) / float(self.maxPop)
+
+        patient_viruses = []
+        for virus in suriving_viruses:
+            patient_viruses.append(virus)
+            try:
+                patient_viruses.append(virus.reproduce(pop_density))
+            except NoChildException:
+                continue
+
+        self.viruses = patient_viruses
+        return len(self.viruses)
 
 
 
