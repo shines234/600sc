@@ -150,6 +150,14 @@ class OrTrigger(Trigger):
 # Question 9
 
 # TODO: PhraseTrigger
+class PhraseTrigger(Trigger):
+    def __init__(self,phrase):
+        self.phrase = phrase
+    
+    def evalute(self,story):
+        return self.phrase in [story.get_subject(),story.get_title(),story.get_summary()]
+
+    
 
 
 #======================
@@ -166,7 +174,14 @@ def filter_stories(stories, triggerlist):
     # TODO: Problem 10
     # This is a placeholder (we're just returning all the stories, with no filtering) 
     # Feel free to change this line!
-    return stories
+    stories_containing_triggers = []
+    for story in stories:
+        for trigger in triggerlist:
+            if trigger.evaluate(story):
+                stories_containing_triggers.append(story)
+                break
+    return stories_containing_triggers
+
 
 #======================
 # Part 4
